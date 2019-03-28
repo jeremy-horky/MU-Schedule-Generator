@@ -22,7 +22,7 @@ public class Game {
 	}
 	
 	public String toString(){
-		return "Plays " + opponent + " at " + field + " on " + month + "/" + day + "/" + year + ".";
+		return "vs. " + opponent + " at " + field + " | " + month + "/" + day + "/" + year;
 	}
 	
 	public int getDay(){
@@ -35,6 +35,10 @@ public class Game {
 	
 	public int getYear(){
 		return year;
+	}
+	
+	public int getDate(){
+		return month * 30 + day;
 	}
 	
 }
