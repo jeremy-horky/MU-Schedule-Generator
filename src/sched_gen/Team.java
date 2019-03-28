@@ -7,11 +7,12 @@
 
 package sched_gen;
 
+import java.util.ArrayList;
+
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -21,6 +22,7 @@ class Team {
 	private String home;	//team home field
 	private Color[] colors;	//first team color
 	private int[] record;	//teams W-L-T record
+	private ArrayList<Game> games = new ArrayList<Game>();
 	
 	public Team(){			//Initializes team to default values
 		name = "Team " + Schedule_Generator.teamCount;
@@ -75,34 +77,66 @@ class Team {
 		}
 	}
 	
-	public Tab toTab(){
-		Tab tab = new Tab();
-	    tab.setText(name);
-	    HBox namefield = new HBox();
-	    namefield.getChildren().add(new Label("Team name: \t" + name));
-	    namefield.setAlignment(Pos.CENTER);
-	    HBox seedfield = new HBox();
-	    seedfield.getChildren().add(new Label("Team seed: \t" + seed));
-	    seedfield.setAlignment(Pos.CENTER);
-	    HBox homefield = new HBox();
-	    homefield.getChildren().add(new Label("Homefield: \t" + home));
-	    homefield.setAlignment(Pos.CENTER);
-	    HBox colorfield = new HBox();
-	    colorfield.getChildren().add(new Label("Team colors: \t"));
-	    colorfield.getChildren().add(new Rectangle(100, 100, colors[0]));
-	    colorfield.getChildren().add(new Rectangle(100, 100, colors[1]));
-	    colorfield.setAlignment(Pos.CENTER);
-	    HBox recordfield = new HBox();
-	    recordfield.getChildren().add(new Label("Team record: \t" + record[0] + "-" + record[1] + "-" + record[2]));
-	    recordfield.setAlignment(Pos.CENTER);
-	    VBox fields = new VBox();
-	    fields.getChildren().add(namefield);
-	    fields.getChildren().add(seedfield);
-	    fields.getChildren().add(homefield);
-	    fields.getChildren().add(colorfield);
-	    fields.getChildren().add(recordfield);
-	    tab.setContent(fields);
-	    return tab;
+	public void addGame(Game game){
+		if (games.size() == 0) games.add(game);
+		for(int i = 0; i < games.size() - 1; i++){
+			
+		}
+	}
+	
+	public GridPane toPane(){
+		GridPane pane = new GridPane();
+	    pane.setHgap(10);
+	    pane.setVgap(12);
+	    pane.setAlignment(Pos.TOP_CENTER);
+		
+		Label nameLabel = new Label("TEAM NAME:");
+		nameLabel.setStyle("-fx-font-weight: bold");
+		Label nameVal = new Label(name);
+		pane.add(nameLabel, 0, 0);
+	    pane.add(nameVal, 1, 0);
+		
+		Label seedLabel = new Label("TEAM SEED:");
+		seedLabel.setStyle("-fx-font-weight: bold");
+		Label seedVal = new Label("" + seed);
+		pane.add(seedLabel, 0, 1);
+	    pane.add(seedVal, 1, 1);
+		
+		Label homeLabel = new Label("HOME FIELD:");
+		homeLabel.setStyle("-fx-font-weight: bold");
+		Label homeVal = new Label(home);
+		pane.add(homeLabel, 0, 2);
+	    pane.add(homeVal, 1, 2);
+	    
+		Label colorLabel = new Label("TEAM COLORS:");
+		colorLabel.setStyle("-fx-font-weight: bold");
+	    HBox colorVal = new HBox();
+	    Rectangle rectColor1 = new Rectangle(20, 20, colors[0]);
+	    rectColor1.setStroke(Color.BLACK);
+	    Rectangle rectColor2 = new Rectangle(20, 20, colors[1]);
+	    rectColor2.setStroke(Color.BLACK);
+	    colorVal.getChildren().addAll(rectColor1,rectColor2);
+	    pane.add(colorLabel, 0, 3);
+	    pane.add(colorVal, 1, 3);
+	   
+	    Label recordLabel = new Label("TEAM RECORD:");
+	    recordLabel.setStyle("-fx-font-weight: bold");
+	    Label recordVal = new Label(record[0] + "-" + record[1] + "-" + record[2]);
+	    pane.add(recordLabel, 0, 4);
+	    pane.add(recordVal, 1, 4);    
+	    
+	    return pane;
+	}
+	
+	public HBox toLogo(){
+		HBox logo = new HBox();
+		Rectangle rectColor1 = new Rectangle(10, 10, colors[0]);
+	    rectColor1.setStroke(Color.BLACK);
+	    Rectangle rectColor2 = new Rectangle(10, 10, colors[1]);
+	    rectColor2.setStroke(Color.BLACK);
+	    logo.getChildren().addAll(rectColor1, new Label(" " + name + " "), rectColor2);
+	    logo.setAlignment(Pos.CENTER);
+		return logo;
 	}
 	
 }

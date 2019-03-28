@@ -1,0 +1,153 @@
+//App launch (Sched_gen.java)
+		// Group root = new Group();
+		// Scene tabsWindow = new Scene(root, width, height, Color.WHITE);
+		// TabPane teamTabs = new TabPane();
+		// teamTabs.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+		// BorderPane borderPane = new BorderPane();
+		// for (int i = 0; i < teamCount; i++) {
+		// Tab tab = teams.get(i).toTab();
+		// teamTabs.getTabs().add(tab);
+		// }
+		// borderPane.prefHeightProperty().bind(tabsWindow.heightProperty());
+		// borderPane.prefWidthProperty().bind(tabsWindow.widthProperty());
+		// borderPane.setCenter(teamTabs);
+		// root.getChildren().add(borderPane);
+		// primaryStage.setScene(tabsWindow);
+		// primaryStage.show();
+
+//teamsTabPane (Sched_gen.java)
+				// if (teamCount > 0) {
+				// Group tabs = new Group();
+				// Scene tabsWindow = new Scene(tabs, width, height,
+				// Color.WHITE);
+				// TabPane teamsPane = new TabPane();
+				// teamsPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+				// BorderPane borderPaneTabs = new BorderPane();
+				// for (int i = 0; i < teamCount; i++) {
+				// Tab tab = teams.get(i).toTab();
+				// teamsPane.getTabs().add(tab);
+				// }
+				// borderPaneTabs.prefHeightProperty().bind(tabsWindow.heightProperty());
+				// borderPaneTabs.prefWidthProperty().bind(tabsWindow.widthProperty());
+				//
+				// borderPaneTabs.setCenter(teamsPane);
+				// tabs.getChildren().add(borderPaneTabs);
+				// primaryStage.setScene(tabsWindow);
+				// primaryStage.show();
+				// } else {
+				// Pane teamsPane = new Pane();
+				// VBox teamsBox = new VBox();
+				// teamsBox.getChildren().addAll(new Label("This is where the
+				// teams go"), backButton);
+				// teamsPane.getChildren().add(teamsBox);
+				// borderPane.setCenter(teamsPane);
+				// }
+				// primaryStage.setScene(mainWindow);
+				// primaryStage.show();
+
+//create teams (sched_gen.java)
+// public static void createTeams() {
+	// //Scanner in = new Scanner(System.in);
+	// String choice;
+	// System.out.println("Enter team information:");
+	// boolean more = true;
+	// while (more) {
+	// teamCount++;
+	// Team team = new Team();
+	// System.out.print("Would you like to edit information for team " +
+	// teamCount + "? [Y/N] ");
+	// choice = in.nextLine().toUpperCase();
+	// if (choice.equals("Y")) {
+	//
+	// System.out.print("Enter team name (or hit enter to use the default): ");
+	// String name = in.nextLine();
+	// if (name.equals(""))
+	// System.out.println("Using default");
+	// else
+	// team.setName(name);
+	//
+	// System.out.print("Enter team seed (or hit enter to use the default): ");
+	// String seedS = in.nextLine();
+	// int seed = Integer.parseInt(seedS);
+	// if (seedS.equals(""))
+	// System.out.println("Using default");
+	// else
+	// team.setSeed(seed);
+	//
+	// System.out.print("Enter home field (or hit enter to use the default): ");
+	// String home = in.nextLine();
+	// if (home.equals(""))
+	// System.out.println("Using default");
+	// else
+	// team.setHome(home);
+	//
+	// System.out.print("Edit colors? [Y/N] ");
+	// choice = in.nextLine().toUpperCase();
+	// if (choice.equals("Y")) {
+	// System.out.println("Enter color RGB values: ");
+	// System.out.print("R1: ");
+	// int r1 = Integer.parseInt(in.nextLine());
+	// System.out.print("G1: ");
+	// int g1 = Integer.parseInt(in.nextLine());
+	// System.out.print("B1: ");
+	// int b1 = Integer.parseInt(in.nextLine());
+	// System.out.print("R2: ");
+	// int r2 = Integer.parseInt(in.nextLine());
+	// System.out.print("G2: ");
+	// int g2 = Integer.parseInt(in.nextLine());
+	// System.out.print("B2: ");
+	// int b2 = Integer.parseInt(in.nextLine());
+	// team.setColors(Color.rgb(r1, g1, b1), Color.rgb(r2, g2, b2));
+	// }
+	//
+	// /*
+	// * ColorPicker colorPicker1 = new ColorPicker();
+	// * colorPicker1.setOnAction(new EventHandler<ActionEvent>() {
+	// * public void handle(ActionEvent e) { Color c =
+	// * colorPicker1.getValue();
+	// * System.out.println("New Color's RGB = " + c.getRed() + " " +
+	// * c.getGreen() + " " + c.getBlue()); } });
+	// *
+	// * ColorPicker colorPicker2 = new ColorPicker();
+	// * colorPicker2.setOnAction(new EventHandler<ActionEvent>() {
+	// * public void handle(ActionEvent e) { Color c =
+	// * colorPicker2.getValue();
+	// * System.out.println("New Color's RGB = " + c.getRed() + " " +
+	// * c.getGreen() + " " + c.getBlue()); } });
+	// *
+	// * Stage colorStage = new Stage(); Group colorGroup = new
+	// * Group(); colorStage.setTitle("Choose colors"); BorderPane
+	// * borderPaneC = new BorderPane(); Scene colorWindow = new
+	// * Scene(colorGroup, width, height, Color.WHITE); Pane colorPane
+	// * = new Pane(); VBox colorBox = new VBox();
+	// * colorBox.getChildren().addAll(colorPicker1, colorPicker2);
+	// * colorPane.getChildren().add(colorBox);
+	// * borderPaneC.setCenter(colorPane);
+	// * colorGroup.getChildren().add(borderPaneC);
+	// * colorStage.setScene(colorWindow); colorStage.show();
+	// */
+	//
+	// System.out.print("Edit record? [Y/N] ");
+	// choice = in.nextLine().toUpperCase();
+	// if (choice.equals("Y")) {
+	// System.out.print("Enter wins: ");
+	// int wins = Integer.parseInt(in.nextLine());
+	// System.out.print("Enter losses: ");
+	// int losses = Integer.parseInt(in.nextLine());
+	// System.out.print("Enter ties: ");
+	// int ties = Integer.parseInt(in.nextLine());
+	// team.setRecord(wins, losses, ties);
+	// }
+	//
+	// }
+	// System.out.print("Would you like to add another team? [Y/N] ");
+	// choice = in.nextLine().toUpperCase();
+	// teams.add(team);
+	// if (choice.equals("Y"))
+	// more = true;
+	// else
+	// more = false;
+	// }
+	// System.out.println("Team creation complete");
+	// //in.close();
+	// }

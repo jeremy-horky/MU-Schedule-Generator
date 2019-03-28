@@ -1,121 +1,441 @@
+/**
+ * Schedule Generator - designed for COEN 4650 - S2019
+ *
+ * @authors Jeremy Horky, Raaz Khoshnood, and Russell Reding
+ * @version Created: //19, Modified //19
+ */
+
 package sched_gen;
 
 import java.util.ArrayList;
 import java.util.Scanner;
 
 import javafx.application.*;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.TabPane.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class Schedule_Generator extends Application {
 	public static int teamCount = 0;
 	public static ArrayList<Team> teams = new ArrayList<Team>();
-	
+	public static int height = 375;
+	public static int width = 600;
+	public static Scanner in = new Scanner(System.in);
+
 	public static void main(String[] args) {
-		Scanner in = new Scanner(System.in);
-		System.out.print("Would you like to load a saved team set or create a new one? [L/N] ");
-		String choice = in.next().toUpperCase();
-		if(choice.equals("L")){
-			System.out.println("Unfortunately, the developers have not implemented this option yet :(");
-		}
-		else if(choice.equals("N")){
-			createTeams();
-		}
-		in.close();
-		Application.launch(args);
+		launch(args);
 	}
 
 	@Override
 	public void start(Stage primaryStage) {
-		primaryStage.setTitle("Tabs");
+		primaryStage.setTitle("Schedule Generator");
 		Group root = new Group();
-		Scene scene = new Scene(root, 400, 250, Color.WHITE);
-		TabPane tabPane = new TabPane();
-		tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+		Scene mainWindow = new Scene(root, width, height, Color.WHITE);
 		BorderPane borderPane = new BorderPane();
-		for (int i = 0; i < teamCount; i++) {
-			Tab tab = teams.get(i).toTab();
-			tabPane.getTabs().add(tab);
-		}
-		// bind to take available space
-		borderPane.prefHeightProperty().bind(scene.heightProperty());
-		borderPane.prefWidthProperty().bind(scene.widthProperty());
 
-		borderPane.setCenter(tabPane);
+		GridPane buttonPane = new GridPane();
+		buttonPane.setHgap(10);
+		buttonPane.setVgap(12);
+		buttonPane.setAlignment(Pos.TOP_CENTER);
+		
+		Button backButton = new Button("Back");
+		backButton.setPrefWidth(100);
+		backButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				borderPane.setCenter(buttonPane);
+				primaryStage.setScene(mainWindow);
+				primaryStage.show();
+			}
+		});
+
+		Button teamsButton = new Button("View teams");
+		teamsButton.setPrefWidth(200);
+		teamsButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				
+				ScrollPane teamsPaneScroll = new ScrollPane();
+				GridPane teamsPane = new GridPane();
+				teamsPane.setHgap(10);
+				teamsPane.setHgap(12);
+				String cssLayout = "-fx-border-color: black;\n" + "-fx-border-insets: 5;\n" + "-fx-border-width: 3;\n";
+				
+				teamsPane.add(new Label("Rank"), 0, 0);
+				teamsPane.add(new Label("Team"), 1, 0);
+				
+				int i;
+				for (i = 0; i < teamCount; i++) {
+					final int j = i;
+					HBox logo = teams.get(i).toLogo();
+					logo.setStyle(cssLayout);
+					logo.setAlignment(Pos.CENTER);
+					teamsPane.add(new Label((i+1) + ". "), 0, (i+1));
+					teamsPane.add(logo, 1, (i+1));
+					
+					Button backToTeams = new Button("Back");
+					backToTeams.setPrefWidth(100);
+					backToTeams.setOnAction(new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent e) {
+							borderPane.setCenter(teamsPaneScroll);
+							primaryStage.setScene(mainWindow);
+							primaryStage.show();
+						}
+					});
+					
+					Button viewButton = new Button("View");
+					viewButton.setPrefWidth(100);
+					viewButton.setOnAction(new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent e) {
+							GridPane viewPane = teams.get(j).toPane();
+							
+							viewPane.add(backToTeams, 0, 5);
+							
+							borderPane.setCenter(viewPane);
+							primaryStage.setScene(mainWindow);
+							primaryStage.show();
+							
+						}
+					});
+					
+					Button editButton = new Button("Edit");
+					editButton.setPrefWidth(100);
+					editButton.setOnAction(new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent e) {
+							
+							System.out.println("edit " + (j+1));
+							
+						}
+					});
+					
+					Button deleteButton = new Button("Delete");
+					deleteButton.setPrefWidth(100);
+					deleteButton.setOnAction(new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent e) {
+							
+							GridPane deletePane = new GridPane();
+							deletePane.setHgap(10);
+							deletePane.setVgap(12);
+							deletePane.setAlignment(Pos.TOP_CENTER);
+							
+							
+							
+							borderPane.setCenter(deletePane);
+							primaryStage.setScene(mainWindow);
+							primaryStage.show();
+						}
+					});
+					
+					teamsPane.add(viewButton, 2, (i+1));
+					teamsPane.add(editButton, 3, (i+1));
+					teamsPane.add(deleteButton, 4, (i+1));
+				}
+				
+				teamsPane.add(backButton, 4, (i+1));
+				teamsPaneScroll.setContent(teamsPane);
+				borderPane.setCenter(teamsPaneScroll);
+				primaryStage.setScene(mainWindow);
+				primaryStage.show();
+			}
+		});
+
+		Button createButton = new Button("Create new teams"); //COMPLETE!
+		createButton.setPrefWidth(200);
+		createButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				GridPane createPane = new GridPane();
+				createPane.setHgap(10);
+				createPane.setVgap(12);
+				createPane.setAlignment(Pos.TOP_CENTER);
+				
+				GridPane textBoxPane = new GridPane();
+				textBoxPane.setHgap(10);
+				textBoxPane.setVgap(12);
+				textBoxPane.setAlignment(Pos.TOP_CENTER);
+				
+				GridPane recordBoxPane = new GridPane();
+				recordBoxPane.setHgap(50);
+				recordBoxPane.setAlignment(Pos.TOP_CENTER);
+				
+				Label nameLabel = new Label("Enter team name:");
+				TextField nameField = new TextField();
+				nameField.setPromptText("Team " + (teamCount + 1));
+
+				Label seedLabel = new Label("Enter seed (as an integer):");
+				TextField seedField = new TextField();
+				seedField.setPromptText("" + (teamCount + 1));
+
+				Label homeLabel = new Label("Enter home field:");
+				TextField homeField = new TextField();
+				homeField.setPromptText("Field " + (teamCount + 1));
+
+				textBoxPane.add(nameLabel, 0, 0);
+				textBoxPane.add(nameField, 1, 0);
+				textBoxPane.add(seedLabel, 0, 1);
+				textBoxPane.add(seedField, 1, 1);
+				textBoxPane.add(homeLabel, 0, 2);
+				textBoxPane.add(homeField, 1, 2);
+				
+				VBox colorBox = new VBox();
+				HBox colorBoxSub = new HBox();
+				colorBoxSub.setSpacing(10);
+				Label colorLabel = new Label("Team colors:");
+				final ColorPicker color1 = new ColorPicker(Color.WHITE);
+				final ColorPicker color2 = new ColorPicker(Color.BLACK);
+				colorBoxSub.getChildren().addAll(color1, color2);
+				colorBoxSub.setAlignment(Pos.CENTER);
+				colorBox.getChildren().addAll(colorLabel, colorBoxSub);
+				colorBox.setAlignment(Pos.CENTER);
+
+				Label winLabel = new Label("Wins");
+				TextField winField = new TextField();
+				winField.setPromptText("0");
+				winField.setPrefWidth(30);
+				Label lossLabel = new Label("Losses");
+				TextField lossField = new TextField();
+				lossField.setPromptText("0");
+				lossField.setPrefWidth(30);
+				Label tieLabel = new Label("Ties");
+				TextField tieField = new TextField();
+				tieField.setPromptText("0");
+				tieField.setPrefWidth(30);
+
+				recordBoxPane.add(winLabel, 0, 0);
+				recordBoxPane.add(winField, 0, 1);
+				recordBoxPane.add(lossLabel, 1, 0);
+				recordBoxPane.add(lossField, 1, 1);
+				recordBoxPane.add(tieLabel, 2, 0);
+				recordBoxPane.add(tieField, 2, 1);
+
+				HBox buttonBox = new HBox();
+				buttonBox.setSpacing(10);
+				Button submit = new Button("Submit");
+				submit.setPrefWidth(100);
+				submit.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent e) {
+						createTeam(nameField, seedField, homeField, winField, lossField, tieField, color1, color2);
+						nameField.clear();
+						nameField.setPromptText("Team " + (teamCount + 1));
+						seedField.clear();
+						seedField.setPromptText("" + (teamCount + 1));
+						homeField.clear();
+						homeField.setPromptText("Field " + (teamCount + 1));
+						color1.setValue(Color.WHITE);
+						color2.setValue(Color.BLACK);
+						winField.clear();
+						lossField.clear();
+						tieField.clear();
+						sortTeams();
+					}
+				});
+				
+				Button clear = new Button("Clear");
+				clear.setPrefWidth(100);
+				clear.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent e) {
+						nameField.clear();
+						nameField.setPromptText("Team " + (teamCount + 1));
+						seedField.clear();
+						seedField.setPromptText("" + (teamCount + 1));
+						homeField.clear();
+						homeField.setPromptText("Field " + (teamCount + 1));
+						color1.setValue(Color.WHITE);
+						color2.setValue(Color.BLACK);
+						winField.clear();
+						lossField.clear();
+						tieField.clear();
+					}
+				});
+				
+				buttonBox.setAlignment(Pos.CENTER);
+				buttonBox.getChildren().addAll(submit, clear, backButton);
+				
+				createPane.add(textBoxPane, 0, 0);
+				createPane.add(colorBox, 0, 1);
+				createPane.add(recordBoxPane, 0, 2);
+				createPane.add(buttonBox, 0, 3);
+				borderPane.setCenter(createPane);
+				primaryStage.setScene(mainWindow);
+				primaryStage.show();
+			}
+		});
+
+		Button loadButton = new Button("Load teams from file (WIP)");
+		loadButton.setPrefWidth(200);
+		loadButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				Pane loadPane = new Pane();
+				VBox loadBox = new VBox();
+				loadBox.getChildren().addAll(new Label("This is where you load in teams"), backButton);
+				loadPane.getChildren().add(loadBox);
+				borderPane.setCenter(loadPane);
+				primaryStage.setScene(mainWindow);
+				primaryStage.show();
+			}
+		});
+
+		Button saveButton = new Button("Save teams to file (WIP)");
+		saveButton.setPrefWidth(200);
+		saveButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				Pane savePane = new Pane();
+				VBox saveBox = new VBox();
+				saveBox.getChildren().addAll(new Label("This is where you save teams"), backButton);
+				savePane.getChildren().add(saveBox);
+				borderPane.setCenter(savePane);
+				primaryStage.setScene(mainWindow);
+				primaryStage.show();
+			}
+		});
+
+		Button schedButton = new Button("Create schedule (WIP)");
+		schedButton.setPrefWidth(200);
+		schedButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				Pane schedPane = new Pane();
+				VBox schedBox = new VBox();
+				schedBox.getChildren().addAll(new Label("This is where a schedule is generated"), backButton);
+				schedPane.getChildren().add(schedBox);
+				borderPane.setCenter(schedPane);
+				primaryStage.setScene(mainWindow);
+				primaryStage.show();
+			}
+		});
+
+		Button exportButton = new Button("Export schedule (WIP)");
+		exportButton.setPrefWidth(200);
+		exportButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				Pane exportPane = new Pane();
+				VBox exportBox = new VBox();
+				exportBox.getChildren().addAll(new Label("This is where you can export a schedule"), backButton);
+				exportPane.getChildren().add(exportBox);
+				borderPane.setCenter(exportPane);
+				primaryStage.setScene(mainWindow);
+				primaryStage.show();
+			}
+		});
+
+		buttonPane.add(teamsButton, 0, 0);
+		buttonPane.add(createButton, 0, 1);
+		buttonPane.add(loadButton, 0, 2);
+		buttonPane.add(saveButton, 0, 3);
+		buttonPane.add(schedButton, 0, 4);
+		buttonPane.add(exportButton, 0, 5);
+		borderPane.prefHeightProperty().bind(mainWindow.heightProperty());
+		borderPane.prefWidthProperty().bind(mainWindow.widthProperty());
+		borderPane.setCenter(buttonPane);
 		root.getChildren().add(borderPane);
-		primaryStage.setScene(scene);
+		primaryStage.setScene(mainWindow);
 		primaryStage.show();
+
 	}
-	
-	public static void createTeams(){
-		Scanner in = new Scanner(System.in);
-		String choice;
-		System.out.println("Enter team information:");
-		boolean more = true;
-		while(more){
-			teamCount++;
-			Team team = new Team();
-			System.out.print("Edit name? [Y/N] ");
-			choice = in.next().toUpperCase();
-			if(choice.equals("Y")){
-				System.out.print("Enter team name: ");
-				String name = in.next();
-				team.setName(name);
-			}
-			System.out.print("Edit seed? [Y/N] ");
-			choice = in.next().toUpperCase();
-			if(choice.equals("Y")){
-				System.out.print("Enter team seed: ");
-				int seed = in.nextInt();
-				team.setSeed(seed);
-			}
-			System.out.print("Edit home field? [Y/N] ");
-			choice = in.next().toUpperCase();
-			if(choice.equals("Y")){
-				System.out.print("Enter home field: ");
-				String home = in.next();
-				team.setHome(home);
-			}
-			System.out.print("Edit colors? [Y/N] ");
-			choice = in.next().toUpperCase();
-			if(choice.equals("Y")){
-				System.out.println("Enter color RGB values: ");
-				System.out.print("R1: ");
-				int r1 = in.nextInt();
-				System.out.print("G1: ");
-				int g1 = in.nextInt();
-				System.out.print("B1: ");
-				int b1 = in.nextInt();
-				System.out.print("R2: ");
-				int r2 = in.nextInt();
-				System.out.print("G2: ");
-				int g2 = in.nextInt();
-				System.out.print("B2: ");
-				int b2 = in.nextInt();
-				team.setColors(Color.rgb(r1,g1,b1),Color.rgb(r2, g2, b2));
-			}
-			System.out.print("Edit record? [Y/N] ");
-			choice = in.next().toUpperCase();
-			if(choice.equals("Y")){
-				System.out.print("Enter wins: ");
-				int wins = in.nextInt();
-				System.out.print("Enter losses: ");
-				int losses = in.nextInt();
-				System.out.print("Enter ties: ");
-				int ties = in.nextInt();
-				team.setRecord(wins, losses, ties);
-			}
-			System.out.print("Would you like to add another team? [Y/N] ");
-			choice = in.next().toUpperCase();
-			teams.add(team);
-			if(choice.equals("Y")) more = true;
-			else more = false;
+
+	public static void createTeam(TextField nameField, TextField seedField, TextField homeField, TextField winField,
+			TextField lossField, TextField tieField, ColorPicker colorPicker1, ColorPicker colorPicker2) {
+		teamCount++;
+		Team team = new Team();
+
+		String name = nameField.getText();
+		if (name.equals("")) {
+			team.setName("Team " + teamCount);
+		} else {
+			team.setName(name);
 		}
-		in.close();
+
+		String seedS = seedField.getText();
+		if (seedS.equals("")) {
+			team.setSeed(teamCount);
+		} else {
+			team.setSeed(Integer.parseInt(seedS));
+		}
+
+		String home = homeField.getText();
+		if (home.equals("")) {
+			team.setHome("Field " + teamCount);
+		} else {
+			team.setHome(home);
+		}
+
+		team.setColors(colorPicker1.getValue(), colorPicker2.getValue());
+
+		String winsS = winField.getText();
+		int wins;
+		if (winsS.equals("")) {
+			wins = 0;
+		} else {
+			wins = Integer.parseInt(winsS);
+		}
+		String lossS = lossField.getText();
+		int losses;
+		if (lossS.equals("")) {
+			losses = 0;
+		} else {
+			losses = Integer.parseInt(lossS);
+		}
+		String tiesS = tieField.getText();
+		int ties;
+		if (tiesS.equals("")) {
+			ties = 0;
+		} else {
+			ties = Integer.parseInt(tiesS);
+		}
+		team.setRecord(wins, losses, ties);
+
+		teams.add(team);
+
 	}
+
+	public static void sortTeams() {
+		quicksort(teams, 0, teamCount - 1);
+	}
+
+	public static void quicksort(ArrayList<Team> list, int start, int end) {
+		if (start < end) {
+			int index = partition(list, start, end);
+			quicksort(list, start, index - 1);
+			quicksort(list, index + 1, end);
+		}
+	}
+
+	public static int partition(ArrayList<Team> list, int start, int end) {
+		int pivot = list.get(end).getSeed();
+		int i = start - 1;
+		for (int j = start; j <= end - 1; j++) {
+			if (list.get(j).getSeed() <= pivot) {
+				i++;
+				swap(i, j);
+			}
+		}
+		swap(i + 1, end);
+		return i + 1;
+	}
+
+	public static void swap(int a, int b) {
+		Team temp = teams.get(a);
+		teams.set(a, teams.get(b));
+		teams.set(b, temp);
+	}
+
 }
