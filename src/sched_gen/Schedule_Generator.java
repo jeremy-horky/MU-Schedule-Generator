@@ -10,28 +10,36 @@ package sched_gen;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
-
+import java.io.File;
 import javafx.application.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextBoundsType;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class Schedule_Generator extends Application {
+	
 	public static int teamCount = 0;
 	public static ArrayList<Team> teams = new ArrayList<Team>();
-	public static int height = 375;
-	public static int width = 600;
+	public static int height = 500;
+	public static int width = 800;
 	public static Scanner in = new Scanner(System.in);
+	public static String file = "No File Selected";
 
 	public static void main(String[] args) {
 		launch(args);
@@ -43,6 +51,23 @@ public class Schedule_Generator extends Application {
 		Group root = new Group();
 		Scene mainWindow = new Scene(root, width, height, Color.WHITE);
 		BorderPane borderPane = new BorderPane();
+		
+		//This sets the parameters for the title
+		GridPane title = new GridPane();
+		title.setAlignment(Pos.TOP_CENTER);
+		title.setPadding(new Insets(10, 10, 10, 10));
+		Text t = new Text("Game Scheduler");
+		t.setStyle("-fx-font: 30 Arial");
+		t.setBoundsType(TextBoundsType.VISUAL);
+		title.getChildren().addAll(t);
+		
+		//This sets the parameters for the left pane called 'nav'
+		GridPane nav = new GridPane();
+		nav.setHgap(10);
+		nav.setVgap(12);
+		nav.setAlignment(Pos.TOP_CENTER);
+		nav.setBackground(new Background(new BackgroundFill(Color.SILVER, null, null)));
+		nav.setPadding(new Insets(10, 10, 10, 10));
 
 		GridPane buttonPane = new GridPane();
 		buttonPane.setHgap(10);
@@ -398,33 +423,75 @@ public class Schedule_Generator extends Application {
 			}
 		});
 
-		Button loadButton = new Button("Load teams from file (WIP)");
+		Button loadButton = new Button("Load teams from file");
 		loadButton.setPrefWidth(200);
 		loadButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				Pane loadPane = new Pane();
-				VBox loadBox = new VBox();
-				loadBox.getChildren().addAll(new Label("This is where you load in teams"), backButton);
-				loadPane.getChildren().add(loadBox);
-				borderPane.setCenter(loadPane);
+				VBox page = new VBox();
+				GridPane loadPane = new GridPane();
+				loadPane.setPadding(new Insets(100, 10, 10, 10));
+				
+				TextField currentFile = new TextField(file);
+				currentFile.setPrefWidth(400);
+				
+				GridPane label = new GridPane();
+				Label prompt = new Label();
+				prompt.setPrefWidth(100);
+				
+				Button selectFile = new Button("Browse");
+				selectFile.setPrefWidth(100);
+				selectFile.setOnAction(new EventHandler<ActionEvent>() {
+
+					@Override
+					public void handle(ActionEvent arg0) {
+						FileChooser inputFile = new FileChooser();
+						inputFile.setTitle("Select a file to import . . .");
+						File in = inputFile.showOpenDialog(null);
+						
+						
+						if(in != null) {
+							currentFile.setText(in.getAbsolutePath());
+							file = in.getAbsolutePath();
+							prompt.setTextFill(Color.DARKGREEN);
+							prompt.setText("File Added!");
+							teams.clear();
+							teams = XML.onload(teams, file);
+							teamCount = XML.getTeamCount();
+							label.add(prompt, 0, 0);
+						}
+						else {
+							prompt.setText("Invalid Entry!");
+							prompt.setTextFill(Color.RED);
+							label.add(prompt, 0, 0);
+						}
+					}
+					
+				});
+				loadPane.add(currentFile, 4, 1);
+				loadPane.add(selectFile, 1000, 1);
+				
+				page.getChildren().addAll(loadPane, label);
+				
+				borderPane.setCenter(page);
 				primaryStage.setScene(mainWindow);
 				primaryStage.show();
 			}
 		});
 
-		Button saveButton = new Button("Save teams to file (WIP)");
+		Button saveButton = new Button("Save teams to file");
 		saveButton.setPrefWidth(200);
 		saveButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				Pane savePane = new Pane();
-				VBox saveBox = new VBox();
-				saveBox.getChildren().addAll(new Label("This is where you save teams"), backButton);
-				savePane.getChildren().add(saveBox);
-				borderPane.setCenter(savePane);
-				primaryStage.setScene(mainWindow);
-				primaryStage.show();
+				XML.write(teams, teamCount);
+//				Pane savePane = new Pane();
+//				VBox saveBox = new VBox();
+//				saveBox.getChildren().addAll(new Label("This is where you save teams"), backButton);
+//				savePane.getChildren().add(saveBox);
+//				borderPane.setCenter(savePane);
+//				primaryStage.setScene(mainWindow);
+//				primaryStage.show();
 			}
 		});
 
@@ -461,16 +528,20 @@ public class Schedule_Generator extends Application {
 			}
 		});
 
-		buttonPane.add(teamsButton, 0, 0);
-		buttonPane.add(createButton, 0, 1);
-		buttonPane.add(loadButton, 0, 2);
-		buttonPane.add(saveButton, 0, 3);
-		buttonPane.add(schedButton, 0, 4);
-		buttonPane.add(exportButton, 0, 5);
+
+		nav.add(teamsButton, 0, 2);
+		nav.add(createButton, 0, 3);
+		nav.add(loadButton, 0, 4);
+		nav.add(saveButton, 0, 5);
+		nav.add(schedButton, 0, 6);
+		nav.add(exportButton, 0, 7);
+		
 		borderPane.prefHeightProperty().bind(mainWindow.heightProperty());
 		borderPane.prefWidthProperty().bind(mainWindow.widthProperty());
+		borderPane.setLeft(nav);
 		borderPane.setCenter(buttonPane);
-		root.getChildren().add(borderPane);
+		borderPane.setTop(title);
+		root.getChildren().addAll(borderPane);
 		primaryStage.setScene(mainWindow);
 		primaryStage.show();
 
