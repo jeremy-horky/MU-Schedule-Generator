@@ -24,7 +24,7 @@ public class XML {
 	
 	public static void write(ArrayList<Team> teams, int teamCount) {
 		
-		System.out.println(teamCount);
+		//System.out.println(teamCount);
 		
 		try {
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -129,14 +129,14 @@ public class XML {
 					teamCount++;
 					Element eElement = (Element) nNode;
 
-					System.out.println("name: " + eElement.getElementsByTagName("name").item(0).getTextContent());
-					System.out.println("seed: " + eElement.getElementsByTagName("seed").item(0).getTextContent());
-					System.out.println("home: " + eElement.getElementsByTagName("home").item(0).getTextContent());
-					System.out.println("colorPrim: " + eElement.getElementsByTagName("colorPrim").item(0).getTextContent());
-					System.out.println("colorSec: " + eElement.getElementsByTagName("colorSec").item(0).getTextContent());
-					System.out.println("wins: " + eElement.getElementsByTagName("wins").item(0).getTextContent());
-					System.out.println("losses: " + eElement.getElementsByTagName("losses").item(0).getTextContent());
-					System.out.println("ties: " + eElement.getElementsByTagName("ties").item(0).getTextContent());
+					//System.out.println("name: " + eElement.getElementsByTagName("name").item(0).getTextContent());
+					//System.out.println("seed: " + eElement.getElementsByTagName("seed").item(0).getTextContent());
+					//System.out.println("home: " + eElement.getElementsByTagName("home").item(0).getTextContent());
+					//System.out.println("colorPrim: " + eElement.getElementsByTagName("colorPrim").item(0).getTextContent());
+					//System.out.println("colorSec: " + eElement.getElementsByTagName("colorSec").item(0).getTextContent());
+					//System.out.println("wins: " + eElement.getElementsByTagName("wins").item(0).getTextContent());
+					//System.out.println("losses: " + eElement.getElementsByTagName("losses").item(0).getTextContent());
+					//System.out.println("ties: " + eElement.getElementsByTagName("ties").item(0).getTextContent());
 
 					
 					Team team = new Team();

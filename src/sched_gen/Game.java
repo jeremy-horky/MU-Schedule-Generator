@@ -7,38 +7,21 @@
 package sched_gen;
 
 public class Game {
-	private int day;
-	private int month;
-	private int year;
-	private String opponent;
+	private String team1;
+	private String team2;
 	private String field;
+	private String week;
 	
-	public Game(int day, int month, int year, String opponent, String field){
-		this.day = day;
-		this.month = month;
-		this.year = year;
-		this.opponent = opponent;
+	public Game(String week, String team1, String team2, String field){
+		this.week = week;
+		this.team1 = team1;
+		this.team2 = team2;
 		this.field = field;
 	}
 	
 	public String toString(){
-		return "vs. " + opponent + " at " + field + " | " + month + "/" + day + "/" + year;
+		return week + ":\t" + team1 + "\t vs. \t" + team2 + "\t at \t" + field;
 	}
-	
-	public int getDay(){
-		return day;
-	}
-	
-	public int getMonth(){
-		return month;
-	}
-	
-	public int getYear(){
-		return year;
-	}
-	
-	public int getDate(){
-		return month * 30 + day;
-	}
+
 	
 }

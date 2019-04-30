@@ -40,6 +40,7 @@ public class Schedule_Generator extends Application {
 	public static int width = 800;
 	public static Scanner in = new Scanner(System.in);
 	public static String file = "No File Selected";
+	public static ArrayList<ArrayList<Game>> gameMaster = new ArrayList<ArrayList<Game>>();
 
 	public static void main(String[] args) {
 		launch(args);
@@ -495,21 +496,43 @@ public class Schedule_Generator extends Application {
 			}
 		});
 
-		Button schedButton = new Button("Create schedule (Proof of Concept)");
+		Button schedButton = new Button("Create schedule");
 		schedButton.setPrefWidth(200);
 		schedButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
 				Pane schedPane = new Pane();
 				VBox schedBox = new VBox();
-				schedBox.getChildren().addAll(
-						new Label("This is where a schedule is generated, games can be seen on a team's detail page"),
-						backButton);
+				
+				HBox numBox = new HBox();
+				Label numGames = new Label("Enter number of games:");
+				TextField numField = new TextField();
+				numField.setPromptText("1");
+				numBox.getChildren().addAll(numGames, numField);
+				
+				Button genButton = new Button("Generate Schedule");
+				genButton.setPrefWidth(200);
+				genButton.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent e){
+						int num = 0;
+						if (numField.getText() != ""){
+							try{
+								num = Integer.parseInt(numField.getText());
+							} catch (Exception ex){}
+						}
+						for (int i = 0; i < teamCount; i++){
+							teams.get(i).games = new ArrayList<Game>();
+						}
+						generateSchedule(num);
+					}	
+				});
+				
+				schedBox.getChildren().addAll(numBox, genButton, backButton);
 				schedPane.getChildren().add(schedBox);
 				borderPane.setCenter(schedPane);
 				primaryStage.setScene(mainWindow);
 				primaryStage.show();
-				generateRandomGames();
 			}
 		});
 
@@ -641,20 +664,94 @@ public class Schedule_Generator extends Application {
 
 				String opponent = teams.get(team).getName();
 				String field;
-				int day = rand.nextInt(27) + 1;
-				int month = rand.nextInt(11) + 1;
-				int year = 2019;
 				int fieldBool = rand.nextInt(2) - 1;
 				if (fieldBool == 0)
 					field = teams.get(i).getHome();
 				else
 					field = teams.get(team).getHome();
-				Game game = new Game(day, month, year, opponent, field);
+				Game game = new Game(("Week " + i), teams.get(i).getName(), opponent, field);
 				teams.get(i).addGame(game);
 				//teams.get(team).addGame(game);
 
 			}
 		}
 	}
-
-}
+	
+	public static void generateSchedule (int num) { 
+        ArrayList<int[]> pairs = new ArrayList<int[]>();
+        int teamCountBye = teamCount;
+		int byeIndex = -1;
+        if (teamCount % 2 == 1){
+        	teamCountBye++;
+        	byeIndex = teamCountBye;
+        }
+		//int nPairs = teamCountBye*(teamCountBye-1)/2;
+    	for(int i = 1; i <= teamCountBye; i++){
+        	for(int j = i+1; j <= teamCountBye; j++){
+        		int pair[] = {i, j};
+        		pairs.add(pair);
+        	}
+        }
+        
+        ArrayList<int[]> pairsLeft = new ArrayList<int[]>(pairs);
+        for (int i = 1; i <= num; i++){
+        	ArrayList<Game> gamesToday = new ArrayList<Game>();
+        	boolean playedToday[] = new boolean[teamCountBye];
+        	for (int k = 0; k < playedToday.length; k++){
+        		playedToday[k] = false;
+        	}
+        	if (i % teamCountBye == 0){
+        		pairsLeft = new ArrayList<int[]>(pairs);
+        	}
+        	for (int j = 0; j < pairsLeft.size();){
+        		int team1 = pairsLeft.get(j)[0];
+        		int team2 = pairsLeft.get(j)[1];
+        		if(!playedToday[team1-1] && !playedToday[team2-1]){
+        			String field = "field";
+        			String week = "Week " + i;
+        			if (team1 == byeIndex){
+        				field = teams.get(team2-1).getHome();
+        				Game game = new Game(week, teams.get(team2-1).getName(), "BYE", field);
+        				gamesToday.add(game);
+        				teams.get(team2-1).games.add(game);
+        			} else if (team2 == byeIndex){
+        				field = teams.get(team1-1).getHome();
+        				Game game = new Game(week, teams.get(team1-1).getName(), "BYE", field);
+        				gamesToday.add(game);
+        				teams.get(team1-1).games.add(game);
+        			} else {
+        				if (teams.get(team1-1).homeCount > teams.get(team2-1).homeCount){
+        					field = teams.get(team2-1).getHome();
+        					teams.get(team2-1).homeCount++;
+        				} else if (teams.get(team1-1).homeCount < teams.get(team2-1).homeCount){
+        					field = teams.get(team1-1).getHome();
+        					teams.get(team1-1).homeCount++;
+        				} else {
+        					Random rand = new Random();
+        					int randTeam = rand.nextInt(1);
+        					field = teams.get(pairsLeft.get(j)[randTeam]-1).getHome();
+        					teams.get(pairsLeft.get(j)[randTeam]-1).homeCount++;
+        				}
+        				Game game = new Game(week, teams.get(team1-1).getName(), teams.get(team2-1).getName(), field);
+        				gamesToday.add(game);
+        				teams.get(team1-1).games.add(game);
+        				teams.get(team2-1).games.add(game);
+        			}
+        			playedToday[team1-1] = true;
+        			playedToday[team2-1] = true;
+        			pairsLeft.remove(j);
+        		} else {
+        			j++;
+        		}
+        	}
+        	gameMaster.add(gamesToday);
+        }
+//        for (int i = 0; i < gameMaster.size(); i++){
+//        	System.out.println("Week " + (i+1));
+//        	for (int j = 0; j < gameMaster.get(i).size(); j++){
+//        		System.out.println(gameMaster.get(i).get(j).toString());
+//        	}
+//        	System.out.println();
+//        }
+    } 
+} 

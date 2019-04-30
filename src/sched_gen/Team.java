@@ -24,7 +24,8 @@ class Team {
 	private String home; // team home field
 	private Color[] colors; // first team color
 	private int[] record; // teams W-L-T record
-	private static ArrayList<Game> games = new ArrayList<Game>();
+	ArrayList<Game> games = new ArrayList<Game>();
+	int homeCount = 0;
 
 	public Team() { // Initializes team to default values
 		name = "Team " + Schedule_Generator.teamCount;
@@ -100,7 +101,7 @@ class Team {
 
 	public void addGame(Game game) {
 		games.add(game);
-		sortGames();
+		//sortGames();
 	}
 
 	public ArrayList<Game> getGames() {
@@ -108,7 +109,7 @@ class Team {
 	}
 
 	public void setGames(ArrayList<Game> games) {
-		Team.games = games;
+		this.games = games;
 	}
 
 	public GridPane toPane() {
@@ -181,35 +182,35 @@ class Team {
 		return logo;
 	}
 	
-	private static void sortGames() {
-		quicksort(games, 0, games.size() - 1);
-	}
-
-	private static void quicksort(ArrayList<Game> list, int start, int end) {
-		if (start < end) {
-			int index = partition(list, start, end);
-			quicksort(list, start, index - 1);
-			quicksort(list, index + 1, end);
-		}
-	}
-
-	private static int partition(ArrayList<Game> list, int start, int end) {
-		int pivot = list.get(end).getDate();
-		int i = start - 1;
-		for (int j = start; j <= end - 1; j++) {
-			if (list.get(j).getDate() <= pivot) {
-				i++;
-				swap(i, j);
-			}
-		}
-		swap(i + 1, end);
-		return i + 1;
-	}
-	
-	public static void swap(int a, int b) {
-		Game temp = games.get(a);
-		games.set(a, games.get(b));
-		games.set(b, temp);
-	}
+//	private static void sortGames() {
+//		quicksort(games, 0, games.size() - 1);
+//	}
+//
+//	private static void quicksort(ArrayList<Game> list, int start, int end) {
+//		if (start < end) {
+//			int index = partition(list, start, end);
+//			quicksort(list, start, index - 1);
+//			quicksort(list, index + 1, end);
+//		}
+//	}
+//
+//	private static int partition(ArrayList<Game> list, int start, int end) {
+//		int pivot = list.get(end).getDate();
+//		int i = start - 1;
+//		for (int j = start; j <= end - 1; j++) {
+//			if (list.get(j).getDate() <= pivot) {
+//				i++;
+//				swap(i, j);
+//			}
+//		}
+//		swap(i + 1, end);
+//		return i + 1;
+//	}
+//	
+//	public static void swap(int a, int b) {
+//		Game temp = games.get(a);
+//		games.set(a, games.get(b));
+//		games.set(b, temp);
+//	}
 
 }
