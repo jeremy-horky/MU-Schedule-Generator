@@ -28,6 +28,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextBoundsType;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -48,7 +49,7 @@ public class Schedule_Generator extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-		primaryStage.setTitle("Schedule Generator");
+		primaryStage.setTitle("THANOS");
 		Group root = new Group();
 		Scene mainWindow = new Scene(root, width, height, Color.WHITE);
 		BorderPane borderPane = new BorderPane();
@@ -57,17 +58,28 @@ public class Schedule_Generator extends Application {
 		GridPane title = new GridPane();
 		title.setAlignment(Pos.TOP_CENTER);
 		title.setPadding(new Insets(10, 10, 10, 10));
-		Text t = new Text("Game Scheduler");
+		Text t = new Text("THANOS");
+		Text sub = new Text("“Creating a schedule that’s perfectly balanced, as all things should be.”");
 		t.setStyle("-fx-font: 30 Arial");
+		t.setFill(Color.WHITE);
 		t.setBoundsType(TextBoundsType.VISUAL);
-		title.getChildren().addAll(t);
+		t.setTextAlignment(TextAlignment.CENTER);
+		sub.setStyle("-fx-font: 15 Arial");
+		sub.setFill(Color.WHITE);
+		sub.setBoundsType(TextBoundsType.VISUAL);
+		sub.setTextAlignment(TextAlignment.CENTER);
+		VBox titleBox = new VBox(t, sub);
+		titleBox.setSpacing(10);
+		title.getChildren().addAll(titleBox);
+		title.setBackground(new Background(new BackgroundFill(Color.DARKSLATEBLUE, null, null)));
+		titleBox.setAlignment(Pos.CENTER);
 		
 		//This sets the parameters for the left pane called 'nav'
 		GridPane nav = new GridPane();
 		nav.setHgap(10);
 		nav.setVgap(12);
 		nav.setAlignment(Pos.TOP_CENTER);
-		nav.setBackground(new Background(new BackgroundFill(Color.SILVER, null, null)));
+		nav.setBackground(new Background(new BackgroundFill(Color.GOLDENROD, null, null)));
 		nav.setPadding(new Insets(10, 10, 10, 10));
 
 		GridPane buttonPane = new GridPane();
@@ -299,7 +311,8 @@ public class Schedule_Generator extends Application {
 				primaryStage.show();
 			}
 		});
-
+		teamsButton.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
+		
 		Button createButton = new Button("Create new teams"); // COMPLETE!
 		createButton.setPrefWidth(200);
 		createButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -423,7 +436,8 @@ public class Schedule_Generator extends Application {
 				primaryStage.show();
 			}
 		});
-
+		createButton.setBackground(new Background(new BackgroundFill(Color.MAGENTA, null, null)));
+		
 		Button loadButton = new Button("Load teams from file");
 		loadButton.setPrefWidth(200);
 		loadButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -479,7 +493,8 @@ public class Schedule_Generator extends Application {
 				primaryStage.show();
 			}
 		});
-
+		loadButton.setBackground(new Background(new BackgroundFill(Color.LIGHTBLUE, null, null)));
+		
 		Button saveButton = new Button("Save teams to file");
 		saveButton.setPrefWidth(200);
 		saveButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -495,7 +510,8 @@ public class Schedule_Generator extends Application {
 //				primaryStage.show();
 			}
 		});
-
+		saveButton.setBackground(new Background(new BackgroundFill(Color.YELLOW, null, null)));
+		
 		Button schedButton = new Button("Create schedule");
 		schedButton.setPrefWidth(200);
 		schedButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -535,7 +551,8 @@ public class Schedule_Generator extends Application {
 				primaryStage.show();
 			}
 		});
-
+		schedButton.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
+		
 		Button exportButton = new Button("Export schedule (WIP)");
 		exportButton.setPrefWidth(200);
 		exportButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -550,7 +567,7 @@ public class Schedule_Generator extends Application {
 				primaryStage.show();
 			}
 		});
-
+		exportButton.setBackground(new Background(new BackgroundFill(Color.ORANGE, null, null)));
 
 		nav.add(teamsButton, 0, 2);
 		nav.add(createButton, 0, 3);
