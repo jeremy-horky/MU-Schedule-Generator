@@ -21,124 +21,138 @@ import org.w3c.dom.NodeList;
 
 public class XML {
 	public static int teamCount = 0;
-	
-	public static void write(ArrayList<Team> teams, int teamCount) {
-		
-		//System.out.println(teamCount);
-		
+
+	public static boolean write(ArrayList<Team> teams, int teamCount) {
+
+		// System.out.println(teamCount);
+
+		boolean saved = false;
+
 		try {
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-			
-			//root element
+
+			// root element
 			Document doc = docBuilder.newDocument();
 			Element rootElement = doc.createElement("data");
 			doc.appendChild(rootElement);
-			
-			for(int i=0; i<teamCount; i++ ) {
-				//<team id="i">
+
+			for (int i = 0; i < teamCount; i++) {
+				// <team id="i">
 				Element team = doc.createElement("team");
 				Attr attr = doc.createAttribute("id");
-				attr.setValue(Integer.toString(i+1));
+				attr.setValue(Integer.toString(i + 1));
 				team.setAttributeNode(attr);
 				rootElement.appendChild(team);
-				
-				//<team id="i">
-				//	<name>[Team Name]<name>
+
+				// <team id="i">
+				// <name>[Team Name]<name>
 				Element name = doc.createElement("name");
 				name.appendChild(doc.createTextNode(teams.get(i).getName()));
 				team.appendChild(name);
-				
-				//<team id="i">
-				//	<seed>[Seed Number]<seed>
+
+				// <team id="i">
+				// <seed>[Seed Number]<seed>
 				Element seed = doc.createElement("seed");
 				seed.appendChild(doc.createTextNode(Integer.toString(teams.get(i).getSeed())));
 				team.appendChild(seed);
-				
-				//<team id="i">
-				//	<home>[Seed Number]<home>
+
+				// <team id="i">
+				// <home>[Seed Number]<home>
 				Element home = doc.createElement("home");
 				home.appendChild(doc.createTextNode(teams.get(i).getHome()));
 				team.appendChild(home);
-				
-				//<team id="i">
-				//	<colorPrim>[Primary Color]<colorPrim>
-				//	<colorSec>[Secondary Color]<colorSec>
+
+				// <team id="i">
+				// <colorPrim>[Primary Color]<colorPrim>
+				// <colorSec>[Secondary Color]<colorSec>
 				Element colorPrim = doc.createElement("colorPrim");
 				Element colorSec = doc.createElement("colorSec");
-				Color color [] = teams.get(i).getColors();
+				Color color[] = teams.get(i).getColors();
 				String primColor = color[0].toString();
 				String secColor = color[1].toString();
 				colorPrim.appendChild(doc.createTextNode(primColor));
 				colorSec.appendChild(doc.createTextNode(secColor));
 				team.appendChild(colorPrim);
 				team.appendChild(colorSec);
-				
+
 				Element wins = doc.createElement("wins");
 				wins.appendChild(doc.createTextNode(Integer.toString(teams.get(i).getWins())));
 				team.appendChild(wins);
-				
+
 				Element losses = doc.createElement("losses");
 				losses.appendChild(doc.createTextNode(Integer.toString(teams.get(i).getLosses())));
 				team.appendChild(losses);
-				
+
 				Element ties = doc.createElement("ties");
 				ties.appendChild(doc.createTextNode(Integer.toString(teams.get(i).getTies())));
 				team.appendChild(ties);
 			}
-			
-			//Write out
+
+			// Write out
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
 			DOMSource source = new DOMSource(doc);
-			System.out.println(System.getProperty("user.dir"));
+			//System.out.println(System.getProperty("user.dir"));
+
 			StreamResult result = new StreamResult(new File(System.getProperty("user.dir") + "\\data.xml"));
-			
+
 			transformer.transform(source, result);
-			
-			System.out.println("File was saved!");
-			
+
+			// System.out.println("File was saved!");
+			saved = true;
+
+			return saved;
+
 		}
-		
-		catch (ParserConfigurationException pce){
+
+		catch (ParserConfigurationException pce) {
 			pce.printStackTrace();
-		}
-		catch (TransformerException tfe){
+		} catch (TransformerException tfe) {
 			tfe.printStackTrace();
 		}
+		return saved;
 	}
-	
+
 	public static ArrayList<Team> onload(ArrayList<Team> teams, String file) {
 		teamCount = 0;
-		try{
+		try {
 			File fXmlFile = new File(file);
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(fXmlFile);
-					
-			//optional, but recommended
-			//read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
+
+			// optional, but recommended
+			// read this -
+			// http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
 			doc.getDocumentElement().normalize();
-			
+
 			NodeList nList = doc.getElementsByTagName("team");
 
 			for (int i = 0; i < nList.getLength(); i++) {
 				Node nNode = nList.item(i);
-						
+
 				if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 					teamCount++;
 					Element eElement = (Element) nNode;
 
-					//System.out.println("name: " + eElement.getElementsByTagName("name").item(0).getTextContent());
-					//System.out.println("seed: " + eElement.getElementsByTagName("seed").item(0).getTextContent());
-					//System.out.println("home: " + eElement.getElementsByTagName("home").item(0).getTextContent());
-					//System.out.println("colorPrim: " + eElement.getElementsByTagName("colorPrim").item(0).getTextContent());
-					//System.out.println("colorSec: " + eElement.getElementsByTagName("colorSec").item(0).getTextContent());
-					//System.out.println("wins: " + eElement.getElementsByTagName("wins").item(0).getTextContent());
-					//System.out.println("losses: " + eElement.getElementsByTagName("losses").item(0).getTextContent());
-					//System.out.println("ties: " + eElement.getElementsByTagName("ties").item(0).getTextContent());
+					// System.out.println("name: " +
+					// eElement.getElementsByTagName("name").item(0).getTextContent());
+					// System.out.println("seed: " +
+					// eElement.getElementsByTagName("seed").item(0).getTextContent());
+					// System.out.println("home: " +
+					// eElement.getElementsByTagName("home").item(0).getTextContent());
+					// System.out.println("colorPrim: " +
+					// eElement.getElementsByTagName("colorPrim").item(0).getTextContent());
+					// System.out.println("colorSec: " +
+					// eElement.getElementsByTagName("colorSec").item(0).getTextContent());
+					// System.out.println("wins: " +
+					// eElement.getElementsByTagName("wins").item(0).getTextContent());
+					// System.out.println("losses: " +
+					// eElement.getElementsByTagName("losses").item(0).getTextContent());
+					// System.out.println("ties: " +
+					// eElement.getElementsByTagName("ties").item(0).getTextContent());
 
-					
 					Team team = new Team();
 
 					String name = eElement.getElementsByTagName("name").item(0).getTextContent();
@@ -162,7 +176,8 @@ public class XML {
 						team.setHome(home);
 					}
 
-					team.setColors(Color.web(eElement.getElementsByTagName("colorPrim").item(0).getTextContent()), Color.web(eElement.getElementsByTagName("colorSec").item(0).getTextContent()));
+					team.setColors(Color.web(eElement.getElementsByTagName("colorPrim").item(0).getTextContent()),
+							Color.web(eElement.getElementsByTagName("colorSec").item(0).getTextContent()));
 
 					String winsS = eElement.getElementsByTagName("wins").item(0).getTextContent();
 					int wins;
@@ -190,16 +205,15 @@ public class XML {
 					teams.add(team);
 				}
 			}
-			
-		}
-		catch (Exception e){
+
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return teams;
 	}
-	
-	public static int getTeamCount(){
+
+	public static int getTeamCount() {
 		return teamCount;
 	}
-	
+
 }

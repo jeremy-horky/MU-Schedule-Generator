@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 import javafx.application.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -19,6 +22,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -48,7 +53,7 @@ public class Schedule_Generator extends Application {
 	}
 
 	@Override
-	public void start(Stage primaryStage) {
+	public void start(Stage primaryStage) throws FileNotFoundException {
 		primaryStage.setTitle("THANOS");
 		Group root = new Group();
 		Scene mainWindow = new Scene(root, width, height, Color.WHITE);
@@ -85,7 +90,12 @@ public class Schedule_Generator extends Application {
 		GridPane buttonPane = new GridPane();
 		buttonPane.setHgap(10);
 		buttonPane.setVgap(12);
-		buttonPane.setAlignment(Pos.TOP_CENTER);
+		buttonPane.setAlignment(Pos.CENTER);
+		String userDir = System.getProperty("user.dir");
+		FileInputStream imageStream = new FileInputStream(userDir + "\\logo.png");
+		Image logo = new Image(imageStream);
+		ImageView image = new ImageView(logo);
+		buttonPane.getChildren().add(image);
 
 		Button backButton = new Button("Back");
 		backButton.setPrefWidth(100);
@@ -311,7 +321,7 @@ public class Schedule_Generator extends Application {
 				primaryStage.show();
 			}
 		});
-		teamsButton.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
+		teamsButton.setBackground(new Background(new BackgroundFill(Color.rgb(21, 181, 21), null, null)));
 		
 		Button createButton = new Button("Create new teams"); // COMPLETE!
 		createButton.setPrefWidth(200);
@@ -436,7 +446,7 @@ public class Schedule_Generator extends Application {
 				primaryStage.show();
 			}
 		});
-		createButton.setBackground(new Background(new BackgroundFill(Color.MAGENTA, null, null)));
+		createButton.setBackground(new Background(new BackgroundFill(Color.rgb(191, 28, 172), null, null)));
 		
 		Button loadButton = new Button("Load teams from file");
 		loadButton.setPrefWidth(200);
@@ -493,21 +503,28 @@ public class Schedule_Generator extends Application {
 				primaryStage.show();
 			}
 		});
-		loadButton.setBackground(new Background(new BackgroundFill(Color.LIGHTBLUE, null, null)));
+		loadButton.setBackground(new Background(new BackgroundFill(Color.rgb(28, 93, 191), null, null)));
 		
 		Button saveButton = new Button("Save teams to file");
 		saveButton.setPrefWidth(200);
 		saveButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				XML.write(teams, teamCount);
-//				Pane savePane = new Pane();
-//				VBox saveBox = new VBox();
-//				saveBox.getChildren().addAll(new Label("This is where you save teams"), backButton);
-//				savePane.getChildren().add(saveBox);
-//				borderPane.setCenter(savePane);
-//				primaryStage.setScene(mainWindow);
-//				primaryStage.show();
+				boolean saved = XML.write(teams, teamCount);
+				Pane savePane = new Pane();
+				savePane.setPadding(new Insets(100, 10, 10, 10));
+				VBox saveBox = new VBox();
+				if (saved){
+					String dir = System.getProperty("user.dir");
+					saveBox.getChildren().addAll(new Label("Data successfully saved to file 'data' at:"), new Label(dir), backButton);
+				} else {
+					saveBox.getChildren().addAll(new Label("ERROR: Data not saved"), backButton);
+				}
+				saveBox.setAlignment(Pos.CENTER);
+				savePane.getChildren().add(saveBox);
+				borderPane.setCenter(savePane);
+				primaryStage.setScene(mainWindow);
+				primaryStage.show();
 			}
 		});
 		saveButton.setBackground(new Background(new BackgroundFill(Color.YELLOW, null, null)));
@@ -518,6 +535,7 @@ public class Schedule_Generator extends Application {
 			@Override
 			public void handle(ActionEvent e) {
 				Pane schedPane = new Pane();
+				schedPane.setPadding(new Insets(100, 10, 10, 10));
 				VBox schedBox = new VBox();
 				
 				HBox numBox = new HBox();
@@ -544,6 +562,7 @@ public class Schedule_Generator extends Application {
 					}	
 				});
 				
+				schedBox.setAlignment(Pos.CENTER);
 				schedBox.getChildren().addAll(numBox, genButton, backButton);
 				schedPane.getChildren().add(schedBox);
 				borderPane.setCenter(schedPane);
@@ -553,7 +572,7 @@ public class Schedule_Generator extends Application {
 		});
 		schedButton.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
 		
-		Button exportButton = new Button("Export schedule (WIP)");
+		Button exportButton = new Button("Export schedule");
 		exportButton.setPrefWidth(200);
 		exportButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -567,7 +586,7 @@ public class Schedule_Generator extends Application {
 				primaryStage.show();
 			}
 		});
-		exportButton.setBackground(new Background(new BackgroundFill(Color.ORANGE, null, null)));
+		exportButton.setBackground(new Background(new BackgroundFill(Color.rgb(239, 127, 0), null, null)));
 
 		nav.add(teamsButton, 0, 2);
 		nav.add(createButton, 0, 3);
