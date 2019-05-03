@@ -23,5 +23,19 @@ public class Game {
 		return week + ":\t" + team1 + "\t vs. \t" + team2 + "\t at \t" + field;
 	}
 
+	public String getWeek() {
+		return week;
+	}
 	
+	public String getFirstTeam() {
+		return team1;
+	}
+	
+	public String getSecondTeam() {
+		return team2;
+	}
+	
+	public String getLocation() {
+		return field;
+	}
 }

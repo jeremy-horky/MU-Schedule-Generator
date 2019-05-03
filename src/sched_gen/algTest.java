@@ -51,12 +51,5 @@ public class algTest {
         	}
         	games.add(gamesToday);
         }
-        for (int i = 0; i < games.size(); i++){
-        	System.out.print("Week " + (i+1) + "  \t");
-        	for (int j = 0; j < games.get(i).size(); j++){
-        		System.out.print(games.get(i).get(j)[0] + " vs " + games.get(i).get(j)[1] + "\t");
-        	}
-        	System.out.println();
-        }
     } 
 } 

@@ -35,8 +35,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextBoundsType;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import jxl.write.WriteException;
 
 public class Schedule_Generator extends Application {
 	
@@ -53,7 +55,7 @@ public class Schedule_Generator extends Application {
 	}
 
 	@Override
-	public void start(Stage primaryStage) throws FileNotFoundException {
+	public void start(Stage primaryStage) throws FileNotFoundException, NoClassDefFoundError {
 		primaryStage.setTitle("THANOS");
 		Group root = new Group();
 		Scene mainWindow = new Scene(root, width, height, Color.WHITE);
@@ -577,11 +579,62 @@ public class Schedule_Generator extends Application {
 		exportButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				Pane exportPane = new Pane();
-				VBox exportBox = new VBox();
-				exportBox.getChildren().addAll(new Label("This is where you can export a schedule"), backButton);
-				exportPane.getChildren().add(exportBox);
-				borderPane.setCenter(exportPane);
+				VBox page = new VBox();
+				GridPane loadPane = new GridPane();
+				loadPane.setPadding(new Insets(100, 10, 10, 10));
+				
+				TextField currentFile = new TextField(file);
+				currentFile.setPrefWidth(400);
+				
+				GridPane label = new GridPane();
+				Label prompt = new Label();
+				prompt.setPrefWidth(100);
+				
+				Button selectFile = new Button("Browse");
+				selectFile.setPrefWidth(100);
+				selectFile.setOnAction(new EventHandler<ActionEvent>() {
+
+					@Override
+					public void handle(ActionEvent arg0) {
+						DirectoryChooser inputFolder = new DirectoryChooser();
+						inputFolder.setTitle("Select a folder to export schedule to . . .");
+						File in = inputFolder.showDialog(null);
+						
+						
+						if(in != null) {
+							currentFile.setText(in.getAbsolutePath());
+							file = in.getAbsolutePath();
+							prompt.setTextFill(Color.DARKGREEN);
+							boolean resol = false;
+							try {
+								resol = Excel.write(gameMaster, file);
+							} catch (Exception e) {
+								resol = false;
+								e.printStackTrace();
+							}	
+							if(resol != false) {
+								prompt.setText("Schedule Exported!");
+							}
+							else {
+								prompt.setText("Invalid Entry!");
+								prompt.setTextFill(Color.RED);
+								label.add(prompt, 0, 0);
+							}
+						}
+						else {
+							prompt.setText("Invalid Entry!");
+							prompt.setTextFill(Color.RED);
+							label.add(prompt, 0, 0);
+						}
+					}
+					
+				});
+				loadPane.add(currentFile, 4, 1);
+				loadPane.add(selectFile, 1000, 1);
+				
+				page.getChildren().addAll(loadPane, label);
+				
+				borderPane.setCenter(page);
 				primaryStage.setScene(mainWindow);
 				primaryStage.show();
 			}
