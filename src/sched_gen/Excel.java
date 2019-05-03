@@ -4,6 +4,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,17 +22,20 @@ public class Excel {
 	
 	public static boolean write(ArrayList<ArrayList<Game>> games, String file) throws IOException, InvalidFormatException {
 		boolean resol = true;
-		System.out.println(file);
-		for (int i = 0; i < games.size(); i++){
-        	System.out.println("Week " + (i+1));
-        	for (int j = 0; j < games.get(i).size(); j++){
-        		System.out.print(games.get(i).get(j).getWeek());
-        		System.out.print(games.get(i).get(j).getFirstTeam());
-        		System.out.print(games.get(i).get(j).getSecondTeam());
-        		System.out.println(games.get(i).get(j).getLocation());
-        		
-        	}
-        	System.out.println();
+		
+		try {
+			File removeFile = new File(file + "\\\\teamSchedule.xlsx");
+			if(removeFile.delete()) 
+	        { 
+	            System.out.println("File deleted successfully"); 
+	        } 
+	        else
+	        { 
+	            System.out.println("Failed to delete the file"); 
+	        } 
+		}
+		catch(Exception e) {
+			resol = false;
 		}
 		
 		Workbook wb = new XSSFWorkbook();
